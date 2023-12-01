@@ -3,8 +3,9 @@ ___
 ___
 
 <p>
-this is a compilation of header that make the fllib.</br>
-this is a general purpose library user for c and c++
+fllib is a compilation of header library,</br>
+intended for general purpose use in C and C++.</br>
+*.hh files are only for C++ use.
 </p>
 
 ___
