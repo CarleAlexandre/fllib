@@ -31,4 +31,8 @@ dynamic array implementation
 
 ### FLDATA
 
-simple data struct definition
+data struct definition for linear algebra and other use case of fllib
+
+### FLLINEAR
+
+linear algebra function
