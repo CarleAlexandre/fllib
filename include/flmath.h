@@ -80,7 +80,7 @@ flPow(double number, long power) {
 }
 
 inline float
-smoothStep(float t) {
+flSmoothStep(float t) {
     float v1 = t * t;
     float v2 = 1.0f - (1.0f - t) * (1.0f - t);
     return (flLerp(v1, v2, t));
@@ -140,18 +140,18 @@ flTravel3d(struct Vector3 current, struct Vector3 target, float velocity, float 
 }
 
 inline Vector2
-screenToWorld2D(Vector2 screen_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
+flScreenToWorld2D(Vector2 screen_pos, Vector2 camera_target, int screen_width, int screen_height, float zoom) {
 	Vector2 world_pos;
-	world_pos.x = (screen_pos.x - (float)s_width / 2) / zoom + camera_target.x;
-	world_pos.y = (screen_pos.y - (float)s_height / 2) / zoom + camera_target.y;
+	world_pos.x = (screen_pos.x - (float)screen_width / 2) / zoom + camera_target.x;
+	world_pos.y = (screen_pos.y - (float)screen_height / 2) / zoom + camera_target.y;
 	return (world_pos);
 }
 
 inline Vector2
-worldToScreen2D(Vector2 world_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
+flWorldToScreen2D(Vector2 world_pos, Vector2 camera_target, int screen_width, int screen_height, float zoom) {
 	Vector2 screen_pos;
-	screen_pos.x = (world_pos.x - camera_target.x) * zoom + (float)s_width / 2;
-	screen_pos.y = (world_pos.y - camera_target.y) * zoom + (float)s_height / 2;
+	screen_pos.x = (world_pos.x - camera_target.x) * zoom + (float)screen_width / 2;
+	screen_pos.y = (world_pos.y - camera_target.y) * zoom + (float)screen_height / 2;
 	return (screen_pos);
 }
 
