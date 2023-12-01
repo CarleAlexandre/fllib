@@ -19,22 +19,15 @@
 #ifndef FLMATH_H
 # define FLMATH_H
 
-#if !defined(RL_VECTOR2_TYPE)
-typedef
-struct Vector2 {
+struct
+Vector2 {
 	float x, y;
-} Vector2;
+};
 
-typedef
-struct Vector3 {
+struct
+Vector3 {
 	float x, y, z;
-} Vector3;
-
-typedef
-struct Rectangle {
-    float x, y, width, height;
-} Rectangle;
-#endif
+};
 
 inline int
 fl_gcd(int a, int b) {
@@ -147,7 +140,7 @@ flTravel3d(struct Vector3 current, struct Vector3 target, float velocity, float 
 }
 
 inline Vector2
-screenPosToWorldPos(Vector2 screen_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
+screenToWorld2D(Vector2 screen_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
 	Vector2 world_pos;
 	world_pos.x = (screen_pos.x - (float)s_width / 2) / zoom + camera_target.x;
 	world_pos.y = (screen_pos.y - (float)s_height / 2) / zoom + camera_target.y;
@@ -155,7 +148,7 @@ screenPosToWorldPos(Vector2 screen_pos, Vector2 camera_target, int s_width, int 
 }
 
 inline Vector2
-worldPosToScreenPos(Vector2 world_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
+worldToScreen2D(Vector2 world_pos, Vector2 camera_target, int s_width, int s_height, float zoom) {
 	Vector2 screen_pos;
 	screen_pos.x = (world_pos.x - camera_target.x) * zoom + (float)s_width / 2;
 	screen_pos.y = (world_pos.y - camera_target.y) * zoom + (float)s_height / 2;
