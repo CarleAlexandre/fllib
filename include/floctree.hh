@@ -3,27 +3,12 @@
 
 namespace fl {
 
-inline short getMortonId(const float x, const float y, const float z) {
-	short ret;
-	ret &= (int)x;
-	ret &= (int)y;
-	ret &= (int)z;
-	return (ret);
-}
-
-inline vec3 getChildPosFromIndex(int idx, vec3 center) {
-	vec3 ret;
-
-	return (ret);
-}
-
 template <typename Type>
 class OctreeNode {
 	private:
 		vec3 pos;
 		int depth;
 		Type label;
-		int root_size;
 		int child_number;
 	
 	public:
@@ -33,8 +18,8 @@ class OctreeNode {
 			return (child_number == 0);
 		}
 
-		float getSize(void) {
-			return (flPow(2, flpow(2, root_size) - depth));
+		float getSize(int exponent) {
+			return (flPow(2, exponent- depth));
 		}
 
 		void clear(void) {
@@ -51,7 +36,7 @@ class OctreeNode {
 		}
 
 		OctreeNode(float x, float y, float z, int depth, Type label, int root_size)
-		: depth(depth), label(label), root_size(root_size) {
+		: depth(depth), label(label) {
 			pos.x = x;
 			pos.y = y;
 			pos.z = z;
@@ -71,15 +56,21 @@ class Octree {
 	private:
 		vec3 pos;
 		OctreeNode<Type> **root;
-		float size;
+		float length;
 		size_t depth;
+		int exponent;
 		int max_depth;
 
 	public:
 
-		Octree(vec3 pos, float size, int max_depth, Type root_label): size(size), max_depth(max_depth) {
+		int size(void) {
+			return (length);
+		}
+
+		Octree(vec3 pos, float size, int max_depth, Type root_label): length(size), max_depth(max_depth) {
 			root = new OctreeNode<Type>(0, 0, 0, 0, root_label, size);
 			depth = 0;
+			exponent = flpow(2, size);
 		}
 
 		~Octree() {
@@ -87,5 +78,25 @@ class Octree {
 			delete root;
 		}
 };
+
+inline short getMortonId(const float x, const float y, const float z) {
+	short ret;
+	ret &= (int)x;
+	ret &= (int)y;
+	ret &= (int)z;
+	return (ret);
+}
+
+inline vec3 getChildPosFromIndex(int idx, vec3 center) {
+	vec3 ret;
+
+	return (ret);
+}
+
+template <typename type>
+inline
+void setPlayerOffset(Octree<type> *octree) {
+	vec3 offset = (octree->size() * octree->size() / 2);
+}
 
 };
