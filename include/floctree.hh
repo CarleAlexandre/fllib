@@ -6,11 +6,10 @@ namespace fl {
 template <typename Type>
 class OctreeNode {
 	private:
-		vec3 pos;
 		int depth;
 		Type label;
 		int child_number;
-	
+
 	public:
 		OctreeNode *children[8];
 
@@ -35,11 +34,8 @@ class OctreeNode {
 			}
 		}
 
-		OctreeNode(float x, float y, float z, int depth, Type label, int root_size)
+		OctreeNode(int depth, Type label, int root_size)
 		: depth(depth), label(label) {
-			pos.x = x;
-			pos.y = y;
-			pos.z = z;
 			for (int i = 0; i < 8; i++) {
 				children[i] == 0x00;
 			}
@@ -52,7 +48,6 @@ class OctreeNode {
 
 template <typename Type>
 class Octree {
-
 	private:
 		vec3 pos;
 		OctreeNode<Type> **root;
@@ -68,9 +63,9 @@ class Octree {
 		}
 
 		Octree(vec3 pos, float size, int max_depth, Type root_label): length(size), max_depth(max_depth) {
-			root = new OctreeNode<Type>(0, 0, 0, 0, root_label, size);
+			root = new OctreeNode<Type>(0, root_label, size);
 			depth = 0;
-			exponent = flpow(2, size);
+			exponent = pow(2, size);
 		}
 
 		~Octree() {
