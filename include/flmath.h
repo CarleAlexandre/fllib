@@ -19,8 +19,6 @@
 #ifndef FLMATH_H
 # define FLMATH_H
 
-# include "math.h"
-
 inline int
 fl_gcd(int a, int b) {
 	while (1) {

@@ -3,6 +3,7 @@
 
 # include "fldata.hh"
 # include "flmath.h"
+# include "math.h"
 
 namespace fl {
 
