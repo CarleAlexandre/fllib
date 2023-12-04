@@ -8,6 +8,22 @@
 namespace fl {
 
 inline vec3
+vec3divValue(const fl::vec3 &v, float f) {
+    // Check for division by zero to avoid potential issues
+    if (f != 0.0f) {
+        return fl::vec3{v.x / f, v.y / f, v.z / f};
+    } else {
+        // Handle division by zero gracefully (return a default value, or signal an error)
+        return fl::vec3{0.0f};
+    }
+}
+
+inline vec3
+vec3mulValue(const fl::vec3 &v, float f) {
+    return fl::vec3{v.x * f, v.y * f, v.z * f};
+}
+
+inline vec3
 rotateYaw(const vec3 point, const vec3 center, float angle_rad) {
     float cosTheta = cos(angle_rad);
     float sinTheta = sin(angle_rad);
