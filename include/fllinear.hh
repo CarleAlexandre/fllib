@@ -7,6 +7,28 @@
 
 namespace fl {
 
+inline vec3
+rotateYaw(const vec3 point, const vec3 center, float angle_rad) {
+    float cosTheta = cos(angle_rad);
+    float sinTheta = sin(angle_rad);
+
+    float rotatedX = center.x + (point.x - center.x) * cosTheta - (point.z - center.z) * sinTheta;
+    float rotatedZ = center.z + (point.x - center.x) * sinTheta + (point.z - center.z) * cosTheta;
+
+    return {rotatedX, point.y, rotatedZ};
+}
+
+inline vec3
+rotatePitch(const vec3 point, const vec3 center, float angle_rad) {
+    float cosTheta = cos(angle_rad);
+    float sinTheta = sin(angle_rad);
+
+    float rotatedY = center.y + (point.y - center.y) * cosTheta - (point.z - center.z) * sinTheta;
+    float rotatedZ = center.z + (point.y - center.y) * sinTheta + (point.z - center.z) * cosTheta;
+
+    return {point.x, rotatedY, rotatedZ};
+}
+
 inline float
 distance2(vec2 v1, vec2 v2) {
     return (pow(v2.x - v1.x, 2) + pow(v2.y - v1.y, 2));
