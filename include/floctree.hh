@@ -13,37 +13,48 @@ class OctreeNode {
 	public:
 		OctreeNode *children[8];
 
-		bool isLeaf() {
+		bool isLeaf(void) {
 			return (child_number == 0);
 		}
 
+		Type getData(void) {
+			return (label);
+		}
+
+		void setData(Type data) {
+			label = data;
+		}
+
 		float getSize(int exponent) {
-			return (flPow(2, exponent- depth));
+			return (flPow(2, exponent - depth));
 		}
 
 		void clear(void) {
 			for (int i = 0; i < child_number; i++) {
 				children[i]->clear();
 				delete children[i];
+				children[i] = nullptr;
 			}
 		}
 
 		void createChild() {
 			if (child_number < 8) {
 				children[child_number] = new OctreeNode<Type>;
+				child_number++;
 			}
 		}
 
 		OctreeNode(int depth, Type label, int root_size)
 		: depth(depth), label(label) {
 			for (int i = 0; i < 8; i++) {
-				children[i] == 0x00;
+				children[i] = nullptr;
 			}
-		};
+		}
 
 		~OctreeNode() {
 			clear();
 		}
+
 };
 
 template <typename Type>
@@ -51,47 +62,101 @@ class Octree {
 	private:
 		vec3 pos;
 		OctreeNode<Type> **root;
-		float length;
+		float size;
 		size_t depth;
 		int exponent;
 		int max_depth;
 
 	public:
 
-		int size(void) {
-			return (length);
+		int root_size(void) {
+			return (size);
 		}
 
-		Octree(vec3 pos, float size, int max_depth, Type root_label): length(size), max_depth(max_depth) {
-			root = new OctreeNode<Type>(0, root_label, size);
+		// Convert 3D coordinates to 1D Morton code
+		unsigned int morton3D(unsigned int x, unsigned int y, unsigned int z) {
+			x = (x | (x << 16)) & 0x030000FF;
+			y = (y | (y << 16)) & 0x030000FF;
+			z = (z | (z << 16)) & 0x030000FF;
+
+			return x | (y << 1) | (z << 2);
+		}
+
+		// Extract bits from Morton code to get 3D coordinates
+		void morton3DInv(unsigned int morton, unsigned int& x, unsigned int& y, unsigned int& z) {
+			x = morton & 0x01010101;
+			y = (morton >> 1) & 0x01010101;
+			z = (morton >> 2) & 0x01010101;
+
+			x = x | (x >> 16);
+			y = y | (y >> 16);
+			z = z | (z >> 16);
+		}
+
+		// Encode 3D coordinates into Morton code
+		unsigned long long mortonEncode(unsigned int x, unsigned int y, unsigned int z) {
+			unsigned long long morton = 0;
+			for (int i = 0; i < 21; i++) {
+				morton |= ((x & 1U << i) << 2 * i) | ((y & 1U << i) << (2 * i + 1)) | ((z & 1U << i) << (2 * i + 2));
+			}
+			return morton;
+		}
+
+		// Decode Morton code into 3D coordinates
+		void mortonDecode(unsigned long long morton, unsigned int& x, unsigned int& y, unsigned int& z) {
+			x = y = z = 0;
+			for (int i = 0; i < 21; i++) {
+				x |= ((morton >> 3 * i) & 1U) << i;
+				y |= ((morton >> (3 * i + 1)) & 1U) << i;
+				z |= ((morton >> (3 * i + 2)) & 1U) << i;
+			}
+		}
+
+		// Linear data query algorithm
+		Type query(const vec3& target_pos) {
+			unsigned long long morton = mortonEncode(
+				static_cast<unsigned int>(target_pos.x),
+				static_cast<unsigned int>(target_pos.y),
+				static_cast<unsigned int>(target_pos.z)
+			);
+			OctreeNode<Type>* currentNode = *root;
+			for (int i = max_depth - 1; i >= 0; i--) {
+				int childIndex = (morton >> 3 * i) & 0x7;
+				if (currentNode->children[childIndex] == nullptr) {
+					return (currentNode->getData());
+				}
+				currentNode = currentNode->children[childIndex];
+			}
+			return currentNode->getData();
+		}
+
+		Octree(vec3 pos, float root_size, int max_depth, Type root_label): size(root_size), max_depth(max_depth) {
+			root = new OctreeNode<Type>(0, root_label, root_size);//can have an error here if i get segfault it come from here
 			depth = 0;
-			exponent = pow(2, size);
+			exponent = log2(size);
 		}
-
 		~Octree() {
 			(*root)->clear();
-			delete root;
+			delete *root;
+			*root = nullptr;
 		}
+
 };
 
-inline short getMortonId(const float x, const float y, const float z) {
-	short ret;
-	ret &= (int)x;
-	ret &= (int)y;
-	ret &= (int)z;
-	return (ret);
-}
 
-inline vec3 getChildPosFromIndex(int idx, vec3 center) {
-	vec3 ret;
 
-	return (ret);
-}
 
-template <typename type>
-inline
-void setPlayerOffset(Octree<type> *octree) {
-	vec3 offset = (octree->size() * octree->size() / 2);
+template <typename Type>
+void linearQuery(OctreeNode<Type>* node) {
+    // Perform operations on the node (e.g., check if it contains relevant data)
+
+    if (!node->isLeaf()) {
+        for (int i = 0; i < 8; i++) {
+            if (node->children[i] != nullptr) {
+                linearQuery(node->children[i]);
+            }
+        }
+    }
 }
 
 };
