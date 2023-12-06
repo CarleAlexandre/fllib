@@ -2,6 +2,7 @@
 # define FLLINEAR_HH
 
 # include "fldata.hh"
+# include "flsimdvec3.hh"
 # include "flmath.h"
 # include "math.h"
 
@@ -9,28 +10,24 @@ namespace fl {
 
 inline vec3
 vec3divValue(const fl::vec3 &v, float f) {
-    // Check for division by zero to avoid potential issues
     if (f != 0.0f) {
-        return fl::vec3{v.x / f, v.y / f, v.z / f};
+        return ((vec3){v.x / f, v.y / f, v.z / f});
     } else {
-        // Handle division by zero gracefully (return a default value, or signal an error)
-        return fl::vec3{0.0f};
+		return ((vec3){0.0f, 0.0f, 0.0f});
     }
 }
 
 inline vec3
 vec3mulValue(const fl::vec3 &v, float f) {
-    return fl::vec3{v.x * f, v.y * f, v.z * f};
+    return ((vec3){v.x * f, v.y * f, v.z * f});
 }
 
 inline vec3
 rotateYaw(const vec3 point, const vec3 center, float angle_rad) {
     float cosTheta = cos(angle_rad);
     float sinTheta = sin(angle_rad);
-
     float rotatedX = center.x + (point.x - center.x) * cosTheta - (point.z - center.z) * sinTheta;
     float rotatedZ = center.z + (point.x - center.x) * sinTheta + (point.z - center.z) * cosTheta;
-
     return {rotatedX, point.y, rotatedZ};
 }
 
@@ -38,10 +35,8 @@ inline vec3
 rotatePitch(const vec3 point, const vec3 center, float angle_rad) {
     float cosTheta = cos(angle_rad);
     float sinTheta = sin(angle_rad);
-
     float rotatedY = center.y + (point.y - center.y) * cosTheta - (point.z - center.z) * sinTheta;
     float rotatedZ = center.z + (point.y - center.y) * sinTheta + (point.z - center.z) * cosTheta;
-
     return {point.x, rotatedY, rotatedZ};
 }
 
