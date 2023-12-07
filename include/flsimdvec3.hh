@@ -6,7 +6,7 @@
 namespace fl {
 
 typedef union vec3_mm_s {
-	vec3 vec3;
+	vec3 vec;
 	__m128 mm_data;
 } vec3_mm_t;
 
