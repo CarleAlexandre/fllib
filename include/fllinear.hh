@@ -19,22 +19,22 @@ distance2(vec2 v1, vec2 v2) {
 
 inline vec3
 vec3add(const vec3 v1, const vec3 v2) {
-	return(vec3_mm_add((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}));
+	return(vec3_mm_add((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}).vec3);
 }
 
 inline vec3
 vec3sub(const vec3 v1, const vec3 v2) {
-	return(vec3_mm_sub((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}));
+	return(vec3_mm_sub((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}).vec3);
 }
 
 inline vec3
 vec3mul(const vec3 v1, const vec3 v2) {
-	return(vec3_mm_mul((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}));
+	return(vec3_mm_mul((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}).vec3);
 }
 
 inline vec3
 vec3addValue(const vec3 v, const float add) {
-	return(vec3_mm_add((vec3_mm_t){.vec3 = v}, (vec3_mm_t){.vec3 = {add, add, add}}));
+	return(vec3_mm_add((vec3_mm_t){.vec3 = v}, (vec3_mm_t){.vec3 = {add, add, add}}).vec3);
 }
 
 inline vec3
@@ -49,7 +49,7 @@ vec3mulValue(const vec3 v, float f) {
 
 inline vec3
 vec3scale(const vec3 v, const float scalar) {
-	return(vec3_mm_mul((vec3_mm_t){.vec3 = v}, (vec3_mm_t){.vec3 = {scalar, scalar, scalar}}));
+	return(vec3_mm_mul((vec3_mm_t){.vec3 = v}, (vec3_mm_t){.vec3 = {scalar, scalar, scalar}}).vec3);
 }
 
 inline vec3
@@ -59,7 +59,7 @@ vec3cross(const vec3 v1, const vec3 v2) {
 
 inline float
 vec3dot(const vec3 v1, const vec3 v2) {
-	const vec3 span = vec3_mm_mul((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2});
+	const vec3 span = vec3_mm_mul((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}).vec3;
     return(span.x + span.y + span.z);
 }
 
@@ -80,7 +80,7 @@ vec3neg(const vec3 v) {
 
 inline vec3
 vec3div(const vec3 v1, const vec3 v2) {
-    return(vec3_mm_div((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}));
+    return(vec3_mm_div((vec3_mm_t){.vec3 = v1}, (vec3_mm_t){.vec3 = v2}).vec3);
 }
 
 inline vec3
