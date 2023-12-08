@@ -73,26 +73,6 @@ class Octree {
 			return (size);
 		}
 
-		// Convert 3D coordinates to 1D Morton code
-		unsigned int morton3D(unsigned int x, unsigned int y, unsigned int z) {
-			x = (x | (x << 16)) & 0x030000FF;
-			y = (y | (y << 16)) & 0x030000FF;
-			z = (z | (z << 16)) & 0x030000FF;
-
-			return x | (y << 1) | (z << 2);
-		}
-
-		// Extract bits from Morton code to get 3D coordinates
-		void morton3DInv(unsigned int morton, unsigned int& x, unsigned int& y, unsigned int& z) {
-			x = morton & 0x01010101;
-			y = (morton >> 1) & 0x01010101;
-			z = (morton >> 2) & 0x01010101;
-
-			x = x | (x >> 16);
-			y = y | (y >> 16);
-			z = z | (z >> 16);
-		}
-
 		// Encode 3D coordinates into Morton code
 		unsigned long long mortonEncode(unsigned int x, unsigned int y, unsigned int z) {
 			unsigned long long morton = 0;
@@ -110,6 +90,10 @@ class Octree {
 				y |= ((morton >> (3 * i + 1)) & 1U) << i;
 				z |= ((morton >> (3 * i + 2)) & 1U) << i;
 			}
+		}
+
+		OctreeNode<Type> *getRoot(void) {
+			return (*root);
 		}
 
 		// Linear data query algorithm

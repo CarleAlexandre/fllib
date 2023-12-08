@@ -10,6 +10,14 @@ intended for general purpose use in C and C++.</br>
 
 ___
 
+## TO DO FLLIB
+___
+- finish octree data struct and algorythm for it.
+- add a physic calculation library for things like collision, fluid, gaz, solid and force.
+- threading library for semaphore, fence, thread, mutex management (using either pthread or equivalent for c++)
+- more idea to come
+___
+
 ## COMPONENT
 ___
 
