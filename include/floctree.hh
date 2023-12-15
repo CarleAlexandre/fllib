@@ -39,12 +39,12 @@ class OctreeNode {
 
 		void createChild() {
 			if (child_number < 8) {
-				children[child_number] = new OctreeNode<Type>;
+				children[child_number] = new OctreeNode<Type>(depth + 1, Type {});
 				child_number++;
 			}
 		}
 
-		OctreeNode(int depth, Type label, int root_size)
+		OctreeNode(int depth, Type label)
 		: depth(depth), label(label) {
 			for (int i = 0; i < 8; i++) {
 				children[i] = nullptr;
@@ -115,7 +115,7 @@ class Octree {
 		}
 
 		Octree(vec3 pos, float root_size, int max_depth, Type root_label): size(root_size), max_depth(max_depth) {
-			root = new OctreeNode<Type>(0, root_label, root_size);//can have an error here if i get segfault it come from here
+			*root = new OctreeNode<Type>(0, root_label);//can have an error here if i get segfault it come from here
 			depth = 0;
 			exponent = log2(size);
 		}
