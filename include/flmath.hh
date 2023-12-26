@@ -19,8 +19,12 @@
 #ifndef FLMATH_H
 # define FLMATH_H
 
-inline int
-fl_gcd(int a, int b) {
+#include "fltype.h"
+
+namespace fl {
+
+static inline i32
+gcd(i32 a, i32 b) {
 	while (1) {
 		if (b == 0) {
 			break;
@@ -33,32 +37,32 @@ fl_gcd(int a, int b) {
 	return (a);
 }
 
-inline float
-Q_rsqrt(float num) {
+static inline f32
+rsqrt(f32 num) {
 	long i;
-	float x2, y;
-	const float threehalfs = 1.5f;
+	f32 x2, y;
+	const f32 threehalfs = 1.5f;
 
 	x2 = num * 0.5f;
 	y = num;
 	i = *(long *) &y;
 	i = 0x5f3759df - (i >> 1);
-	y = *(float *) &i;
+	y = *(f32 *) &i;
 	y = y * (threehalfs - (x2 * y * y));
 
 	return y;
 }
 
-inline float
-flLerp(float a, float b, float x) {
+static inline f32
+lerp(f32 a, f32 b, f32 x) {
 	if (x <= 0.5f)
 		return (x * (b - a) + a);
 	return (b - (1.0f - x) * (b - a));
 }
 
-inline double
-flPow(double number, long power) {
-	double result = 1;
+static inline f64
+pow(f64 number, long power) {
+	f64 result = 1;
 	while (power > 0) { 
 		if (power & 1) {
 			result *= (result * number);
@@ -69,11 +73,13 @@ flPow(double number, long power) {
 	return (result);
 }
 
-inline float
-flSmoothStep(float t) {
-    float v1 = t * t;
-    float v2 = 1.0f - (1.0f - t) * (1.0f - t);
-    return (flLerp(v1, v2, t));
+static inline f32
+smoothStep(f32 t) {
+    f32 v1 = t * t;
+    f32 v2 = 1.0f - (1.0f - t) * (1.0f - t);
+    return (lerp(v1, v2, t));
 }
+
+};
 
 #endif

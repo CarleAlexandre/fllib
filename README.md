@@ -16,7 +16,7 @@ ___
 - add a physic calculation library for things like collision, fluid, gaz, solid and force.
 - threading library for semaphore, fence, thread, mutex management (using either pthread or equivalent for c++)
 - more idea to come
-- for shared libs i nee to use -fpic -shared into a .so
+
 ___
 
 ## COMPONENT

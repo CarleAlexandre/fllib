@@ -1,46 +1,65 @@
 #ifndef flvecTOR_HH
 # define flvecTOR_HH
 
-#include "flmem.h"
+#include "flmem.hh"
 
 namespace fl {
 
 template <typename Type> class vec {
-	Type	*array;
-	Type	*first_elem;
-
+	protected:
+		Type	*array;
+		Type	*first_elem;
 	public:
-	unsigned long long	capacity;
-	unsigned long long	used;
+		u64	capacity;
+		u64	used;
 
-	Type &operator[](const unsigned long long idx) {
+	Type
+	&operator[](const u64 idx) {
 		return(first_elem[idx]);
 	};
 
-	Type &at(const unsigned long long idx) {
+	Type
+	&at(const u64 idx) {
 		return (first_elem[idx]);
 	}
 
-	void operator+=(Type data) {
+	void
+	operator+=(Type data) {
 		push_back(data);
 	};
 
-	template <unsigned long long N>
-	void operator+=(Type (&data)[N]) {
+	template <u64 N>
+	void
+	operator+=(Type (&data)[N]) {
 		push_back(data);
 	};
 
-	Type last(void) {
+	Type
+	last(void) {
 		return (first_elem[used]);
 	}
 
-	Type first(void) {
+	Type
+	first(void) {
 		return (first_elem[0]);
 	}
 
-	void expand(void) {
+	bool
+	copy(vec<Type> *to, u64 n) {
+		if (to == NULLPTR) {
+			return (0);
+		}
+		u64 i = 0;
+		for (; i < n || i < used; i++) {
+			*to += first_elem[i];
+		}
+		return (i);
+	}
+
+	void
+	expand(void) {
 		Type *tmp = new Type[ 2 * capacity];
-		for (unsigned long long i = 0; i < used; ++i) {
+		for (u64 i = 0; i < used; ++i) {
             tmp[i] = first_elem[i];
         }
 		delete [] array;
@@ -49,9 +68,10 @@ template <typename Type> class vec {
 		first_elem = array;
 	}
 
-	void reduce(void) {
-		Type *tmp = new Type[capacity - (unsigned long long)(capacity * 0.5)];
-		for (unsigned long long i = 0; i < used; ++i) {
+	void
+	reduce(void) {
+		Type *tmp = new Type[capacity - (u64)(capacity * 0.5)];
+		for (u64 i = 0; i < used; ++i) {
             tmp[i] = first_elem[i];
         }
 		delete [] array;
@@ -60,44 +80,50 @@ template <typename Type> class vec {
 		first_elem = array;
 	}
 
-	void push_back(Type element) {
+	void
+	push_back(Type element) {
 		if (used >= capacity -1 || used == 0) {
 			expand();
 		}
-		array[used] = element;
+		first_elem[used] = element;
 		used++;
 	}
 
-	template <unsigned long long N>
-	void push_back(Type	(&element)[N]) {
+	template <u64 N>
+	void
+	push_back(Type	(&element)[N]) {
 		while (used + N >= capacity) {
 			expand();
 		}
-		for (unsigned long long i = 0; i < N; i++) {
-			array[used + i] = element[i];
+		for (u64 i = 0; i < N; i++) {
+			first_elem[used + i] = element[i];
 		}
 		used += N;
 	}
 
-	unsigned long long const size(void) {
-		return (used);
+	const u64
+	size(void) {
+		return ((const u64)used);
 	}
 
-	void pop_back(void) {
+	void
+	pop_back(void) {
 		used--;
 		if (used < capacity * 0.5) {
 			reduce();
 		}
 	}
 
-	void pop_back(unsigned long long n) {
+	void
+	pop_back(u64 n) {
 		used -= n;
 		if (used < capacity * 0.5) {
 			reduce();
 		}
 	}
 
-	void pop_first(void) {
+	void
+	pop_first(void) {
 		first_elem = &array[1];
 		used--;
 		if (used < capacity * 0.5) {
@@ -105,7 +131,8 @@ template <typename Type> class vec {
 		}
 	}
 
-	void pop_first(unsigned long long n) {
+	void
+	pop_first(u64 n) {
 		first_elem = &array[n - 1];
 		used -= n;
 		if (used < capacity * 0.5) {
@@ -114,8 +141,9 @@ template <typename Type> class vec {
 	}
 
 	//array index start from 0
-	void erase(unsigned long long index) {
-		for (int i = 0; i < used - index - 1; i ++) {
+	void
+	erase(u64 index) {
+		for (i32 i = 0; i < used - index - 1; i ++) {
 			first_elem[index + i] =  first_elem[index + i + 1];
 		}
 		used--;
@@ -124,12 +152,24 @@ template <typename Type> class vec {
 		}
 	}
 
-	void clear(void) {
+	void
+	clear(void) {
 		delete [] array;
 		array = new Type[1];
 		first_elem = array;
 		capacity = 1;
 		used = 0;
+	}
+
+	void
+	putNullLast() {
+		push_back(0x00);
+	}
+
+	const i8
+	*c_str(void) {
+		putNullLast();
+		return ((const i8 *)first_elem);
 	}
 
 	vec() {
