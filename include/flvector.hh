@@ -1,7 +1,7 @@
 #ifndef flvecTOR_HH
 # define flvecTOR_HH
 
-#include "flmem.hh"
+#include <fltype.h>
 
 namespace fl {
 
@@ -177,6 +177,23 @@ template <typename Type> class vec {
 		first_elem = array;
 		capacity = 1;
 		used = 0;
+	}
+	vec(Type data) {
+		array = new Type[1];
+		first_elem = array;
+		capacity = 1;
+		used = 0;
+		push_back(data);
+	}
+	template <u64 N>
+	vec(Type data[N]) {
+		array = new Type[1];
+		first_elem = array;
+		capacity = 1;
+		used = 0;
+		for (u64 i = 0; i < N; i++) {
+			push_back(data[i]);
+		}
 	}
 	~vec() {
 		delete [] array;
