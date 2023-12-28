@@ -144,5 +144,5 @@ ipch/
 # Visual Studio Trace Files
 *.e2e
 
-unitest/**
-.editorconfig
+#unitest/**
+#.editorconfig
