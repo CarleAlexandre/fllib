@@ -36,4 +36,25 @@ typedef double f64;
 #  define endl '\n'
 # endif
 
+/**
+	Critical Error
+*/
+# ifndef FL_ERROR
+#  define FL_ERROR -1
+# endif
+
+/**
+	Intended Behavior
+*/
+# ifndef FL_GOOD
+#  define FL_GOOD 0
+# endif
+
+/**
+	Not Critical but could be better
+*/
+# ifndef FL_BAD
+#  define FL_BAD 1
+# endif
+
 #endif

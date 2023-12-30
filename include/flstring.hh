@@ -1,28 +1,29 @@
 #ifndef FLSTRING_HH
 # define FLSTRING_HH
 
-# include "flmem.hh"
 # include "flvector.hh"
 
 namespace fl {
 
 static inline vec<char *>
-strSplit(const char *str, const i8 delim, i32 n, void *(*allocator)(u64)) {
+strSplit(const char *str, const i8 delim, u64 n, void *(*allocator)(u64)) {
 	vec<char *> split;
 	vec<char> span;
 	char * tmp;
 
-	for (i32 i = 0; i < n || str[i] != NULL; i++) {
+	for (u64 i = 0; i < n || str[i] != NULL; i++) {
 		span += str[i];
 		if (str[i] ==  delim) {
 			tmp = (char *)allocator(span.size());
-			int k = 0;
-			for (; k < span.size(); k++) {
+			for (u64 k = 0; k <= span.size(); k++) {
+				if (k == span.size()) {
+					tmp[k] = 0x00;
+					break;
+				}
 				tmp[k] = span[k];
 			}
-			tmp[k] = 0x00;
 			span.clear();
-			split.push_back(tmp); 
+			split.push_back(tmp);
 			i++;
 		}
 	}

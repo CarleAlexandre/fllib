@@ -51,6 +51,22 @@ VkInstance *createInstance(const char *app_name) {
 	return (instance);
 }
 
+VkResult createDevice(VkPhysicalDevice physical_device, VkPhysicalDeviceFeatures device_features, u32 graphic_family, VkDevice *device) {
+	VkDevice *ret_device = new VkDevice;
+
+	const VkDeviceCreateInfo create_info = {
+		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+		.pNext = NULLPTR,
+
+	};
+
+	if (vkCreateDevice()) {
+		delete device;
+		return (VK_ERROR_OUT_OF_DEVICE_MEMORY);
+	}
+	return (VK_SUCCESS);
+}
+
 window_t *initWindow(const int height, const int width, const char *title) {
 	if (volkInitialize() != VK_SUCCESS) {
 		return (NULLPTR);
@@ -63,6 +79,6 @@ window_t *initWindow(const int height, const int width, const char *title) {
 
 	window->instance = createInstance(title);
 	volkLoadInstance(*window->instance);
-
+	createDevice();
 	return (window);
 }

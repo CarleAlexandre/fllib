@@ -101,9 +101,9 @@ template <typename Type> class vec {
 		used += N;
 	}
 
-	const u64
+	u64
 	size(void) {
-		return ((const u64)used);
+		return (used);
 	}
 
 	void
@@ -115,7 +115,7 @@ template <typename Type> class vec {
 	}
 
 	void
-	pop_back(u64 n) {
+	pop_back(const u64 n) {
 		used -= n;
 		if (used < capacity * 0.5) {
 			reduce();
@@ -132,7 +132,7 @@ template <typename Type> class vec {
 	}
 
 	void
-	pop_first(u64 n) {
+	pop_first(const u64 n) {
 		first_elem = &array[n - 1];
 		used -= n;
 		if (used < capacity * 0.5) {
@@ -142,8 +142,8 @@ template <typename Type> class vec {
 
 	//array index start from 0
 	void
-	erase(u64 index) {
-		for (i32 i = 0; i < used - index - 1; i ++) {
+	erase(const u64 index) {
+		for (u64 i = 0; i < used - index - 1; i ++) {
 			first_elem[index + i] =  first_elem[index + i + 1];
 		}
 		used--;
