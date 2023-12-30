@@ -1,7 +1,7 @@
 #ifndef FLSTRING_HH
 # define FLSTRING_HH
 
-# include "flvector.hh"
+# include <flvector.hh>
 
 namespace fl {
 
