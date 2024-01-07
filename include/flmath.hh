@@ -3,7 +3,7 @@
  *
  *       Filename:  flmath.h
  *
- *    Description:  
+ *    Description:
  *
  *        Version:  1.0
  *        Created:  05/12/2023 05:11:35 AM
@@ -11,7 +11,7 @@
  *       Compiler:  gcc
  *
  *         Author:  fatmeat (), pathofyggdrasil@gmail.com
- *   Organization:  
+ *   Organization:
  *
  * =====================================================================================
  */
@@ -63,7 +63,7 @@ lerp(f32 a, f32 b, f32 x) {
 static inline f64
 pow(f64 number, long power) {
 	f64 result = 1;
-	while (power > 0) { 
+	while (power > 0) {
 		if (power & 1) {
 			result *= (result * number);
 		}
@@ -78,6 +78,17 @@ smoothStep(f32 t) {
     f32 v1 = t * t;
     f32 v2 = 1.0f - (1.0f - t) * (1.0f - t);
     return (lerp(v1, v2, t));
+}
+
+static inline f32
+clamp(f32 value, f32 lo, f32 hi) {
+	if (value < lo) {
+		return (lo);
+	}
+	if (value > hi) {
+		return (hi);
+	}
+	return (value);
 }
 
 };
