@@ -11,7 +11,7 @@ strSplit(const char *str, const i8 delim, u64 n, void *(*allocator)(u64)) {
 	vec<char> span;
 	char * tmp;
 
-	for (u64 i = 0; i < n || str[i] != NULL; i++) {
+	for (u64 i = 0; i < n || str[i] != '\0'; i++) {
 		span += str[i];
 		if (str[i] ==  delim) {
 			tmp = (char *)allocator(span.size());
