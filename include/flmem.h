@@ -3,7 +3,7 @@
  *
  *       Filename:  flmem.h
  *
- *    Description:  
+ *    Description:
  *
  *        Version:  1.0
  *        Created:  05/01/23 22:44:20
@@ -11,7 +11,7 @@
  *       Compiler:  gcc
  *
  *         Author:  fatmeat (), pathofyggdrasil@gmail.com
- *   Organization:  
+ *   Organization:
  *
  * =====================================================================================
  */
@@ -21,15 +21,13 @@
 
 # include "fltype.h"
 
-namespace fl {
-
 /*
  *	DESCRIPTION
- *		the function copy n bytes of memory from src to dest 
+ *		the function copy n bytes of memory from src to dest
  *	RETURN VALUE
  *		return dest poi32er
  * */
-static inline void*
+inline void*
 memCpy(const void *dest, const void *src, u64 size) {
 	while (size--) {
 		*((i8 *)dest + size) = *((i8 *)src + size);
@@ -41,10 +39,10 @@ memCpy(const void *dest, const void *src, u64 size) {
  *	DESCRIPTION
  *		the function copy n bytes of memory from src to dest.
  *	RETURN VALUE
- *		returns a poi32er to the memory area (dest + n).
+ *		returns a pointer to the memory area (dest + n).
  *
  * */
-static inline void
+inline void
 *memPCpy(const void *dest, const void *src, u64 n) {
 	for (u64 i = 0; i < n; i++) {
 		*((i8*)dest + i) = *((i8 *)src + i);
@@ -60,7 +58,7 @@ static inline void
 	RETURN VALUE
        The function returns a poi32er to the memory area s.
  * */
-static inline void
+inline void
 *memSet(const void *mem, i32 b, u64 n) {
 	for (u64 i = 0; i < n; i++) {
 		*((i8 *)mem + i) = b;
@@ -75,7 +73,7 @@ static inline void
  *		return the new memory chunk
  *
  * */
-static inline void
+inline void
 *memDup(const void *mem, u64 n, void*(*allocator)(u64)) {
 	void	*dup;
 	dup = allocator(n);
@@ -92,7 +90,7 @@ static inline void
  *		return the substraction of the two last i8 i8
  *
  * */
-static inline i32
+inline i32
 memCmp(const void *mem1, const void *mem2, u64 n) {
 	i8 span;
 	while (n--) {
@@ -103,7 +101,4 @@ memCmp(const void *mem1, const void *mem2, u64 n) {
 	return (span);
 }
 
-};
-
 # endif
-
