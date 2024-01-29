@@ -107,10 +107,11 @@ class llist {
 		return (idx);
 	}
 
-	void list_foreach(void (*fun)(T *)){
+	template <typename argT>
+	void list_foreach(void (*fun)(T *, argT *), argT *arg){
 		lnode_t<T> *span = *list;
 		while (span->next != NULLPTR) {
-			fun(&span->elem);
+			fun(&span->elem, arg);
 		}
 		span = *list;
 	}
