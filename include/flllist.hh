@@ -29,9 +29,6 @@ class llist {
 
 		for (u64 i = 0; i < idx; i++) {
 			span = span->next;
-			if (span == NULL) {
-				abort();
-			}
 		}
 		return (span->elem);
 	}
@@ -75,9 +72,6 @@ class llist {
 		lnode_t<T> *span = last;
 
 		lnode_t<T> *newnode = new (lnode_t<T>);
-		if (!newnode) {
-			abort();
-		}
 
 		newnode->elem = data;
 		newnode->next = NULLPTR;
