@@ -104,10 +104,10 @@ class llist {
 	template <typename argT>
 	void list_foreach(void (*fun)(T *, argT *), argT *arg){
 		lnode_t<T> *span = *list;
-		while (span->next != NULLPTR) {
+		while (span != NULLPTR) {
 			fun(&span->elem, arg);
+			span = span->next;
 		}
-		span = *list;
 	}
 
 	//need to free the data returned or else it leak
