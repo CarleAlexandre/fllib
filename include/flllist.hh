@@ -121,23 +121,23 @@ class llist {
 	}
 
 	//need to free the data returned or else it leak
-	T list_del(u32 idx) {
+	void list_del(u32 idx) {
 		lnode_t<T> *span = *list;
 
 		for (u64 i = 0; i < idx; i++) {
 			span = span->next;
 		}
 
-		T ret = span->elem;
-		if (span->prev != NULLPTR) {
-			span->prev->next = NULLPTR;
+		if (span->prev) {
+			span->prev->next = span->next;
 		}
-		if (span->next != NULLPTR) {
-			lnode_t<T> *tmp = span->next;
-			tmp->prev = span->prev;
+		if (span->next) {
+			span->next->prev = span->prev;
+		} else {
+			last = span->prev;
 		}
+		length--;
 		delete span;
-		return (ret);
 	}
 
 	llist() {
