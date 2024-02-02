@@ -24,7 +24,17 @@ class llist {
 
 	public:
 
-	T operator[](const u64 idx) {
+	lnode_t<T> *operator[](const u64 idx) {
+		lnode_t<T> *span = *list;
+
+		for (u64 i = 0; i < idx; i++) {
+			span = span->next;
+		}
+		return (span);
+	}
+
+
+	T getValue(const u64 idx) {
 		lnode_t<T> *span = *list;
 
 		for (u64 i = 0; i < idx; i++) {
