@@ -1,6 +1,8 @@
 #ifndef FLGL_HH
 # define FLGL_HH
 
+//GL FOR GAME LIBRARY;
+
 # define VK_NO_PROTOTYPES
 # include <vulkan/vulkan.h>
 # include <GLFW/glfw3.h>
@@ -13,7 +15,7 @@ typedef struct s_window {
 	int width;
 	const char *title;
 	VkInstance *instance;
-	VkPhysicalDevice *phy_device;
+	VkPhysicalDevice phy_device;
 	VkDevice *device;
 	VkSurfaceKHR *surface;
 } window_t;
