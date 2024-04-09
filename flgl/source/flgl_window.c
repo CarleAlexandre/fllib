@@ -1,9 +1,14 @@
-# include "../include/flgl.hh"
+# include <stddef.h>
+# include <stdint.h>
+# include <stdbool.h>
+# include <stdlib.h>
+# include "../include/flgl.h"
 
-VkInstance *createInstance(
+inline
+VkInstance createInstance(
 	const char *app_name
 ) {
-	VkInstance *instance = new VkInstance;
+	VkInstance instance;
 
 	// only one layer used for now maybe if later not changed, use const char **layers instead of fl::vec<const char *>
 	const char *layers[1] = {
@@ -26,7 +31,7 @@ VkInstance *createInstance(
 
 	const VkApplicationInfo app_info = {
 		.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-		.pNext = NULLPTR,
+		.pNext = 0x00,
 		.pApplicationName = app_name,
 		.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
 		.pEngineName = "NoHeavenEngine",
@@ -36,7 +41,7 @@ VkInstance *createInstance(
 
 	const VkInstanceCreateInfo create_info = {
 		.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-		.pNext = NULLPTR,
+		.pNext = 0x00,
 		.flags = 0,
 		.pApplicationInfo = &app_info,
 		.enabledLayerCount = 1,
@@ -45,21 +50,21 @@ VkInstance *createInstance(
 		.ppEnabledExtensionNames = exts,
 	};
 
-	if (vkCreateInstance(&create_info, NULL, instance) != VK_SUCCESS) {
-		delete instance;
-		return (NULLPTR);
+	if (vkCreateInstance(&create_info, NULL, &instance) != VK_SUCCESS) {
+		return (0x00);
 	}
 
 	return (instance);
 }
 
+inline
 VkResult findSuitablePhysicalDevice(
 	VkInstance instance,
-	bool (*selector)(VkPhysicalDevice),
-	VkPhysicalDevice *physicalDevice
+	int (*selector)(VkPhysicalDevice),
+	VkPhysicalDevice physicalDevice
 ) {
 	uint32_t deviceCount = 0;
-	if (vkEnumeratePhysicalDevices(instance, &deviceCount, NULLPTR)) {
+	if (vkEnumeratePhysicalDevices(instance, &deviceCount, 0x00)) {
 		return (VK_ERROR_INITIALIZATION_FAILED);
 	}
 	if (!deviceCount) {
@@ -70,9 +75,9 @@ VkResult findSuitablePhysicalDevice(
 	if (vkEnumeratePhysicalDevices(instance, &deviceCount, devices)) {
 		return (VK_ERROR_INITIALIZATION_FAILED);
 	}
-	for (const auto& device : devices) {
-		if (selector(device)) {
-			*physicalDevice = device;
+	for (uint32_t i = 0; i < deviceCount; i++) {
+		if (selector(devices[i])) {
+			physicalDevice = devices[i];
 			return (VK_SUCCESS);
 		}
 	}
@@ -80,12 +85,13 @@ VkResult findSuitablePhysicalDevice(
 	return (VK_ERROR_INITIALIZATION_FAILED);
 }
 
+inline
 uint32_t findQueueFamily(
 	VkPhysicalDevice device,
 	VkQueueFlags desiredFlags
 ){
 	uint32_t familyCount;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, NULLPTR);
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, 0x00);
 	VkQueueFamilyProperties families[familyCount];
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, families);
 
@@ -97,13 +103,13 @@ uint32_t findQueueFamily(
 	return (0);
 }
 
+inline
 VkResult createDevice(
 	VkPhysicalDevice physical_device,
 	VkPhysicalDeviceFeatures device_features,
-	u32 graphic_family,
-	VkDevice *device
+	uint32_t graphic_family,
+	VkDevice device
 ) {
-	device = new VkDevice;
 	const char *extension = {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 	};
@@ -111,7 +117,7 @@ VkResult createDevice(
 
 	const VkDeviceQueueCreateInfo queue_create_info = {
 		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		.pNext = NULLPTR,
+		.pNext = 0x00,
 		.flags = 0,
 		.queueFamilyIndex = graphic_family,
 		.queueCount = 1,
@@ -120,52 +126,118 @@ VkResult createDevice(
 
 	const VkDeviceCreateInfo create_info = {
 		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		.pNext = NULLPTR,
+		.pNext = 0x00,
 		.flags = 0,
 		.queueCreateInfoCount = 1,
 		.pQueueCreateInfos = &queue_create_info,
 		.enabledLayerCount = 0,
-		.ppEnabledLayerNames = NULLPTR,
+		.ppEnabledLayerNames = 0x00,
 		.enabledExtensionCount = 1,
 		.ppEnabledExtensionNames = &extension,
 		.pEnabledFeatures = &device_features,
 	};
 
-	if (vkCreateDevice(physical_device, &create_info, NULL, device)) {
-		delete device;
+	if (vkCreateDevice(physical_device, &create_info, NULL, &device)) {
 		return (VK_ERROR_OUT_OF_DEVICE_MEMORY);
 	}
 
 	return (VK_SUCCESS);
 }
 
-bool selectDevice(VkPhysicalDevice device) {
+inline
+int selectDevice(VkPhysicalDevice device) {
 	if (device) {
-		return (true);
+		return (1);
 	}
-	return (false);
+	return (0);
 }
 
-window_t *initWindow(
+inline
+swapChainSupportDetails querySwapchainSupport(
+	VkPhysicalDevice device,
+	VkSurfaceKHR surface
+){
+	swapChainSupportDetails details;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+		device, surface, &details.capabilities);
+
+	vkGetPhysicalDeviceSurfaceFormatsKHR(
+		device, surface, &details.formatCount, 0x00);
+	if (details.formatCount) {
+		details.formats = malloc(
+			sizeof(VkSurfaceFormatKHR) * details.formatCount);//need to free size in win destroy
+		vkGetPhysicalDeviceSurfaceFormatsKHR(
+			device, surface, &details.formatCount, details.formats);
+	} else {
+		return (details);
+	}
+
+	vkGetPhysicalDeviceSurfacePresentModesKHR(
+		device, surface, &details.presentModesCount, 0x00);
+	if (details.presentModesCount) {
+		details.presentModes = malloc(
+			sizeof(VkPresentModeKHR) * details.presentModesCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(
+			device, surface, &details.presentModesCount, details.presentModes);
+	} else {
+		free(details.formats);
+		return (details);
+	}
+	return (details);
+}
+
+inline
+VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+	const VkSurfaceFormatKHR *availableFormats
+){
+	(void)availableFormats;
+	return ((VkSurfaceFormatKHR){
+		VK_FORMAT_B8G8R8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+	});
+}
+
+inline
+VkPresentModeKHR chooseSwapPresentMode(
+	const VkPresentModeKHR *availablePresentModes,
+	const uint32_t presentModeCount
+){
+	(void)availablePresentModes;
+	for (uint32_t i = 0; i < presentModeCount; i++) {
+		if (availablePresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
+			return (availablePresentModes[i]);
+	}
+	return (VK_PRESENT_MODE_FIFO_KHR);
+}
+
+//returned pointer is unsafe, don't free it yourself, call the destroy window function
+window_t *flinitWindow(
 	const int height,
 	const int width,
 	const char *title
 ) {
 	if (volkInitialize() != VK_SUCCESS) {
-		return (NULLPTR);
+		return (0x00);
 	};
-
-	window_t *window = new window_t;
+	window_t *window = malloc(sizeof(window_t));
 	window->height = height;
 	window->width = width;
 	window->title = title;
 
 	window->instance = createInstance(title);
-	volkLoadInstance(*window->instance);
+	volkLoadInstance(window->instance);
 
-	findSuitablePhysicalDevice(*window->instance, selectDevice, &window->phy_device);
+	findSuitablePhysicalDevice(
+		window->instance, selectDevice, window->phy_device);
 
 	VkPhysicalDeviceFeatures deviceFeatures = {};
-	createDevice(window->phy_device, deviceFeatures, findQueueFamily(window->phy_device, VK_QUEUE_GRAPHICS_BIT), window->device);
+	if (createDevice(window->phy_device, deviceFeatures, findQueueFamily(
+			window->phy_device, VK_QUEUE_GRAPHICS_BIT), window->device)) {
+		return (0x00);
+	}
 	return (window);
+}
+
+
+void fldestroyWindow(window_t *window) {
+	free(window);
 }
